@@ -26,3 +26,15 @@ def get_format_list():
 	for format in db.formats.find():
 		formatlist.append(format['name'])
 	return formatlist
+
+def get_format_ids(formats):
+	idlist = []
+	for format in formats:
+		idlist.append(str(db.formats.find_one({'name':format})['uid']))
+	return idlist
+
+def get_voice_ids(formats):
+	idlist = []
+	for format in formats:
+		idlist.append(str(db.voices.find_one({'name':format})['uid']))
+	return idlist

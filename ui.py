@@ -128,7 +128,12 @@ class AddVoice(wx.Frame):
         userbut.Bind(wx.EVT_BUTTON,self.butact,userbut)
 
     def butact(self,event):
-        print self.av.GetValue() + ':' + self.de.GetValue()
+        voice = { 
+            'name':self.av.GetValue(),
+            'description':self.de.GetValue()
+        }
+        print voice
+        self.Close()
 
 
 class AddDel(wx.Frame):
@@ -142,7 +147,9 @@ class AddDel(wx.Frame):
         userbut.Bind(wx.EVT_BUTTON,self.butact,userbut)
 
     def butact(self,event):
-        print self.av.GetValue()
+        style = {'name':self.av.GetValue() }
+        print style
+        self.Close()
 
 class AddFre(wx.Frame):
     def __init__(self,parent,id):
@@ -158,43 +165,23 @@ class AddFre(wx.Frame):
         userbut.Bind(wx.EVT_BUTTON,self.butact,userbut)
 
     def butact(self,event):
-        print self.fr.GetValue() + ':' + self.fn.GetValue()
+        frequency = {
+            'frequency':self.fr.GetValue(),
+            'filename':self.fn.GetValue()
+        }
+        print frequency
+        self.Close()
 
 class AddSta(wx.Frame):
     def __init__(self,parent,id):
+        self.format_list = []
         wx.Frame.__init__(self,parent,id,'Stations',size=(400,300))
         wx.Frame.CentreOnScreen(self)
         userin=wx.Panel(self,-1,(-1,-1),(-1,-1))
-        wx.StaticText(userin,-1,"Format Name",pos=(100,80))
+        wx.StaticText(userin,-1,"Station Name",pos=(100,80))
         self.av=wx.TextCtrl(userin,-1,"",pos=(225,75),size=(100,30))
+        '''
         self.cb1 = wx.CheckBox(userin, -1, "HAC",pos=(100,110))
-        self.cb2 = wx.CheckBox(userin, -1, "CTY",pos=(100,130))
-        self.cb3 = wx.CheckBox(userin, -1, "RCK",pos=(100,150))
-        self.cb4 = wx.CheckBox(userin, -1, "ALT",pos=(100,170))
-        self.cb5 = wx.CheckBox(userin, -1, "VAR",pos=(100,190))
-        #self.Bind(wx.EVT_CHECKBOX, self.OnCb, self.cb1)
-        """self.Bind(wx.EVT_CHECKBOX, self.OnCb, self.cb2)
-        self.Bind(wx.EVT_CHECKBOX, self.OnCb, self.cb3)
-        self.Bind(wx.EVT_CHECKBOX, self.OnCb, self.cb4)
-        self.Bind(wx.EVT_CHECKBOX, self.OnCb, self.cb5)"""
-        userbut=wx.Button(userin,label='Add',pos=(180,210),size=(60,-1))
-        userbut.Bind(wx.EVT_BUTTON,self.butact,userbut)
-        #if self.cb1.GetValue() == True:
-            #setattr(newAttr, comp, 'Y')
-        #else:
-            #setattr(newAttr, comp, 'N') 
-
-    def butact(self,event):
-        print self.av.GetValue()
-
-class AddPos(wx.Frame):
-    def __init__(self,parent,id):
-        wx.Frame.__init__(self,parent,id,'Positioning Statements',size=(400,300))
-        wx.Frame.CentreOnScreen(self)
-        userin=wx.Panel(self,-1,(-1,-1),(-1,-1))
-        wx.StaticText(userin,-1,"Format Name",pos=(100,80))
-        self.av=wx.TextCtrl(userin,-1,"",pos=(225,75),size=(100,30))
-        '''self.cb1 = wx.CheckBox(userin, -1, "HAC",pos=(100,110))
         self.cb2 = wx.CheckBox(userin, -1, "CTY",pos=(100,130))
         self.cb3 = wx.CheckBox(userin, -1, "RCK",pos=(100,150))
         self.cb4 = wx.CheckBox(userin, -1, "ALT",pos=(100,170))
@@ -206,18 +193,60 @@ class AddPos(wx.Frame):
             y +=20
 
         userbut=wx.Button(userin,label='Add',pos=(180,210),size=(60,-1))
-        userbut.Bind(wx.EVT_BUTTON,self.butact,userbut)
-        self.format_list = []
+        userbut.Bind(wx.EVT_BUTTON,self.butact)
 
     def check_event(self,e):
-        l =  e.GetEventObject().Label
-        self.format_list.append(l)
+        sender = e.GetEventObject()
+        if sender.GetValue() == True:
+            self.format_list.append(sender.Label)
+        else:
+            self.format_list.remove(sender.Label)
 
     def butact(self,event):
-        print self.format_list
+        station = {
+            'name':self.av.GetValue(),
+            'formatids':ui_core.get_format_ids(self.format_list)
+        }
+        print station
+        self.Close()
+
+class AddPos(wx.Frame):
+    def __init__(self,parent,id):
+        self.format_list = []
+        wx.Frame.__init__(self,parent,id,'Positioning Statements',size=(400,300))
+        wx.Frame.CentreOnScreen(self)
+        userin=wx.Panel(self,-1,(-1,-1),(-1,-1))
+        wx.StaticText(userin,-1,"Format Name",pos=(100,80))
+        self.av=wx.TextCtrl(userin,-1,"",pos=(225,75),size=(100,30))
+        # Code for Dynamic Buttons 
+        x=100
+        y=110
+        for format in ui_core.get_format_list():
+            wx.CheckBox(userin,-1,format,pos=(x,y)).Bind(wx.EVT_CHECKBOX, self.check_event)
+            y +=20
+
+        userbut=wx.Button(userin,label='Add',pos=(180,210),size=(60,-1))
+        userbut.Bind(wx.EVT_BUTTON,self.butact,userbut)
+        
+
+    def check_event(self,e):
+        sender = e.GetEventObject()
+        if sender.GetValue() == True:
+            self.format_list.append(sender.Label)
+        else:
+            self.format_list.remove(sender.Label)
+
+    def butact(self,event):
+        position = {
+            'name':self.av.GetValue(),
+            'formatids':ui_core.get_format_ids(self.format_list)
+        }
+        print position
+        self.Close()
 
 class AddFor(wx.Frame):
     def __init__(self,parent,id):
+        self.voice_list = []
         wx.Frame.__init__(self,parent,id,'Add Format',size=(400,300))
         wx.Frame.CentreOnScreen(self)
         userin=wx.Panel(self,-1,(-1,-1),(-1,-1))
@@ -225,23 +254,31 @@ class AddFor(wx.Frame):
         self.av=wx.TextCtrl(userin,-1,"",pos=(215,45),size=(100,30))
         wx.StaticText(userin,-1,"Real Name",pos=(100,90))
         self.de=wx.TextCtrl(userin,-1,"",pos=(215,85),size=(100,30))
-        self.cb1 = wx.CheckBox(userin, -1, "Sam",pos=(120,120))
-        self.cb2 = wx.CheckBox(userin, -1, "Gary",pos=(120,140))
-        self.cb3 = wx.CheckBox(userin, -1, "Lisa",pos=(120,160))
-        self.cb4 = wx.CheckBox(userin, -1, "Steve",pos=(120,180))
-        self.cb5 = wx.CheckBox(userin, -1, "Mike",pos=(120,200))
-        self.cb6 = wx.CheckBox(userin, -1, "Alexa",pos=(120,220))
-        self.cb7 = wx.CheckBox(userin, -1, "Sassy",pos=(120,240))
-        #self.Bind(wx.EVT_CHECKBOX, self.OnCb, self.cb1)
-        """self.Bind(wx.EVT_CHECKBOX, self.OnCb, self.cb2)
-        self.Bind(wx.EVT_CHECKBOX, self.OnCb, self.cb3)
-        self.Bind(wx.EVT_CHECKBOX, self.OnCb, self.cb4)
-        self.Bind(wx.EVT_CHECKBOX, self.OnCb, self.cb5)"""
-        userbut=wx.Button(userin,label='Add',pos=(250,150),size=(60,-1))
+        # Code for Dynamic Buttons 
+        x=120
+        y=140
+        for voice in ui_core.get_voice_list():
+            wx.CheckBox(userin,-1,voice,pos=(x,y)).Bind(wx.EVT_CHECKBOX, self.check_event)
+            y +=20
+
+        userbut=wx.Button(userin,label='Add',pos=(250,y),size=(60,-1))
         userbut.Bind(wx.EVT_BUTTON,self.butact,userbut)
 
+    def check_event(self,e):
+        sender = e.GetEventObject()
+        if sender.GetValue() == True:
+            self.voice_list.append(sender.Label)
+        else:
+            self.voice_list.remove(sender.Label)
+
     def butact(self,event):
-        print self.av.GetValue()+':'+self.de.GetValue()
+        format = {
+            'name':self.av.GetValue(),
+            'realName':self.de.GetValue(),
+            'voiceIds':ui_core.get_voice_ids(self.voice_list)
+        }
+        print format
+        self.Close()
 
 app = MyApp(0)
 app.MainLoop()
