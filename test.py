@@ -10,7 +10,7 @@ class MainWindow(wx.Frame):
         status=self.CreateStatusBar()
         menubar=wx.MenuBar()
         file_menu=wx.Menu()
-        edit_menu=wx.Menu()
+        create_menu=wx.Menu()
 
         ID_FILE_NEW = 1
         ID_FILE_OPEN = 2
