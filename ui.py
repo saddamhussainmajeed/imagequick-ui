@@ -1,4 +1,5 @@
 import wx
+import ui_core
 
 class MainFrame(wx.Frame):
     def __init__(self, parent, id, title):
@@ -193,21 +194,27 @@ class AddPos(wx.Frame):
         userin=wx.Panel(self,-1,(-1,-1),(-1,-1))
         wx.StaticText(userin,-1,"Format Name",pos=(100,80))
         self.av=wx.TextCtrl(userin,-1,"",pos=(225,75),size=(100,30))
-        self.cb1 = wx.CheckBox(userin, -1, "HAC",pos=(100,110))
+        '''self.cb1 = wx.CheckBox(userin, -1, "HAC",pos=(100,110))
         self.cb2 = wx.CheckBox(userin, -1, "CTY",pos=(100,130))
         self.cb3 = wx.CheckBox(userin, -1, "RCK",pos=(100,150))
         self.cb4 = wx.CheckBox(userin, -1, "ALT",pos=(100,170))
-        self.cb5 = wx.CheckBox(userin, -1, "VAR",pos=(100,190))
-        #self.Bind(wx.EVT_CHECKBOX, self.OnCb, self.cb1)
-        """self.Bind(wx.EVT_CHECKBOX, self.OnCb, self.cb2)
-        self.Bind(wx.EVT_CHECKBOX, self.OnCb, self.cb3)
-        self.Bind(wx.EVT_CHECKBOX, self.OnCb, self.cb4)
-        self.Bind(wx.EVT_CHECKBOX, self.OnCb, self.cb5)"""
+        self.cb5 = wx.CheckBox(userin, -1, "VAR",pos=(100,190))'''
+        x=100
+        y=110
+        for format in ui_core.get_format_list():
+            wx.CheckBox(userin,-1,format,pos=(x,y)).Bind(wx.EVT_CHECKBOX, self.check_event)
+            y +=20
+
         userbut=wx.Button(userin,label='Add',pos=(180,210),size=(60,-1))
         userbut.Bind(wx.EVT_BUTTON,self.butact,userbut)
+        self.format_list = []
+
+    def check_event(self,e):
+        l =  e.GetEventObject().Label
+        self.format_list.append(l)
 
     def butact(self,event):
-        print self.av.GetValue()
+        print self.format_list
 
 class AddFor(wx.Frame):
     def __init__(self,parent,id):
