@@ -9,6 +9,12 @@ def get_voice_list():
 		voicelist.append(voice['name'])
 	return voicelist
 
+def get_style_list():
+	stylelist = []
+	for style in db.styles.find():
+		stylelist.append(style['name'])
+	return stylelist
+
 def get_template_list():
 	templatelist = []
 	for template in db.templates.find():
