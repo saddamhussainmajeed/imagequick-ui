@@ -1,5 +1,9 @@
 import wx
-import ui_core
+from common import ui_core
+from common import database
+from analytics import analytics
+from crud import create
+
 
 class MainFrame(wx.Frame):
     def __init__(self, parent, id, title):
@@ -142,8 +146,10 @@ class IpConnect(wx.Frame):
         but2.Bind(wx.EVT_BUTTON,self.quitwin)
 
     def butact(self,event):
-        print self.s.GetValue() + ':' + self.p.GetValue()
-        
+        database.connect(self.s.GetValue(),int(self.p.GetValue()))
+        print database.db
+        self.Close()
+
     def quitwin(self,event):
         self.Close()
 
@@ -165,7 +171,7 @@ class AddVoice(wx.Frame):
             'name':self.av.GetValue(),
             'description':self.de.GetValue()
         }
-        print voice
+        create.voice(voice) 
         self.Close()
 
 
@@ -181,7 +187,7 @@ class AddDel(wx.Frame):
 
     def butact(self,event):
         style = {'name':self.av.GetValue() }
-        print style
+        create.style(style)
         self.Close()
 
 class AddFre(wx.Frame):
@@ -202,7 +208,7 @@ class AddFre(wx.Frame):
             'frequency':self.fr.GetValue(),
             'filename':self.fn.GetValue()
         }
-        print frequency
+        create.frequency(frequency)
         self.Close()
 
 class AddSta(wx.Frame):
@@ -236,7 +242,7 @@ class AddSta(wx.Frame):
             'name':self.av.GetValue(),
             'formatids':ui_core.get_format_ids(self.format_list)
         }
-        print station
+        create.station(station)
         self.Close()
 
 class AddPos(wx.Frame):
@@ -271,7 +277,7 @@ class AddPos(wx.Frame):
             'name':self.av.GetValue(),
             'formatids':ui_core.get_format_ids(self.format_list)
         }
-        print position
+        create.position(position)
         self.Close()
 
 class AddFor(wx.Frame):
@@ -309,7 +315,7 @@ class AddFor(wx.Frame):
             'realName':self.de.GetValue(),
             'voiceIds':ui_core.get_voice_ids(self.voice_list)
         }
-        print format
+        create.format(format)
         self.Close()
 
 class AddHook( wx.Frame ): 
@@ -395,7 +401,7 @@ class AddHook( wx.Frame ):
  
 #Till Here
         scrollWin.SetScrollbars(1,20,1,105)
-        scrollWin.SetScrollRate( 1, 1 )
+        scrollWin.SetScrollRate( 1,5 )
 
 class AddTemp( wx.Frame ): 
     def __init__( self ):
