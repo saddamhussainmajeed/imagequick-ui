@@ -1,0 +1,1 @@
+{options : { "create" : "templates" }, indexes:[{ "v" : 1, "key" : { "_id" : 1 }, "ns" : "imagequick_dev.templates", "name" : "_id_" }, { "v" : 1, "key" : { "length" : 1 }, "ns" : "imagequick_dev.templates", "name" : "length_1" }]}
