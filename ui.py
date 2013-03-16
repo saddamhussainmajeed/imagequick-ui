@@ -1,6 +1,7 @@
 import wx
 from common import ui_core
 from common import database
+from batch import voicetotemplate
 from analytics import analytics
 from crud import create
 
@@ -11,7 +12,7 @@ class MainFrame(wx.Frame):
         menubar = wx.MenuBar()
         
         menufile = wx.Menu()
-        create = wx.Menu()
+        createmenu = wx.Menu()
         batch=wx.Menu()
         menuhelp=wx.Menu()
         analt=wx.Menu()
@@ -21,14 +22,14 @@ class MainFrame(wx.Frame):
         quit = wx.MenuItem(menufile, 105, '&Quit\tCtrl+Q')
         menufile.AppendItem(quit)
         
-        create.Append(201, 'Voice Talent')
-        create.Append(202, 'Template')
-        create.Append(203, 'Hook Template')
-        create.Append(204, 'Format')
-        create.Append(205, 'Positioning Statement')
-        create.Append(206, 'Station')
-        create.Append(207, 'Frequency')
-        create.Append(208, 'Delivery Style')
+        createmenu.Append(201, 'Voice Talent')
+        createmenu.Append(202, 'Template')
+        createmenu.Append(203, 'Hook Template')
+        createmenu.Append(204, 'Format')
+        createmenu.Append(205, 'Positioning Statement')
+        createmenu.Append(206, 'Station')
+        createmenu.Append(207, 'Frequency')
+        createmenu.Append(208, 'Delivery Style')
         
                         
         sub=wx.Menu()
@@ -37,9 +38,12 @@ class MainFrame(wx.Frame):
         sub.Append(312,'Station',kind=wx.ITEM_NORMAL)
         sub.Append(313,'Frequency',kind=wx.ITEM_NORMAL)
         sub.Append(314,'Position',kind=wx.ITEM_NORMAL)
-        
         batch.AppendMenu(302,'Voice to Template',sub)
-
+        self.Bind(wx.EVT_MENU,self.batch_sfp,id=310)
+        self.Bind(wx.EVT_MENU,self.batch_sf,id=311)
+        self.Bind(wx.EVT_MENU,self.batch_s,id=312)
+        self.Bind(wx.EVT_MENU,self.batch_f,id=313)
+        self.Bind(wx.EVT_MENU,self.batch_p,id=314)
         
         menuhelp.Append(501, 'About')
 
@@ -51,7 +55,6 @@ class MainFrame(wx.Frame):
         sm1.Append(704,'Producer',kind=wx.ITEM_NORMAL)
         sm2.Append(607,'Voice',kind=wx.ITEM_NORMAL)
         sm2.Append(607,'Producer',kind=wx.ITEM_NORMAL)
-
         analt.Append(601, 'Format')
         analt.Append(602, 'Voice')
         analt.Append(603, 'Template')
@@ -61,7 +64,7 @@ class MainFrame(wx.Frame):
         analt.AppendMenu(607, 'Monthly PayBills',sm2)
         
         menubar.Append(menufile, '&File')
-        menubar.Append(create, '&Create')
+        menubar.Append(createmenu, '&Create')
         menubar.Append(batch, '&Batch')
         menubar.Append(analt, '&Analytics')
         menubar.Append(menuhelp, '&Help')
@@ -123,6 +126,65 @@ class MainFrame(wx.Frame):
         dlg.ShowModal()
         dlg.Destroy()
 
+    ''' Actions for Batch Operations '''
+    def batch_sfp(self,event):
+        self.new = Batch_Box(parent=None,id=-1,selector='SFP')
+        self.new.Show()
+
+    def batch_sf(self,event):
+        self.new = Batch_Box(parent=None,id=-1,selector='SF')
+        self.new.Show()
+
+    def batch_s(self,event):
+        self.new = Batch_Box(parent=None,id=-1,selector='S')
+        self.new.Show()
+
+    def batch_f(self,event):
+        self.new = Batch_Box(parent=None,id=-1,selector='F')
+        self.new.Show()
+
+    def batch_p(self,event):
+        self.new = Batch_Box(parent=None,id=-1,selector='P')
+        self.new.Show()
+
+'''Batch Opertation Class '''
+class Batch_Box(wx.Frame):
+    def __init__(self,parent,id,selector):
+        self.selector = selector
+        wx.Frame.__init__(self,parent,id,'Connect to Server',size=(210,180))
+        wx.Frame.CentreOnScreen(self)
+        inp=wx.Panel(self,-1,(-1,-1),(-1,-1))
+        formats = ui_core.get_format_list()
+        voices = ui_core.get_voice_list()
+        wx.StaticText(inp,-1,"Select Format",pos=(10,20))
+        self.cb = wx.ComboBox(inp, pos=(10, 40), choices=formats,style=wx.CB_READONLY)
+        wx.StaticText(inp,-1,"Select Voice",pos=(10,70))
+        self.cb2 = wx.ComboBox(inp, pos=(10, 90), choices=voices,style=wx.CB_READONLY)
+        but=wx.Button(inp,label='Update',pos=(30,140),size=(65,-1))
+        but2=wx.Button(inp,label='Cancel',pos=(110,140),size=(65,-1))
+        but.Bind(wx.EVT_BUTTON,self.butact,but)
+        but2.Bind(wx.EVT_BUTTON,self.quitwin)
+
+
+    def butact(self,event):
+        format = self.cb.GetValue()
+        voice = self.cb2.GetValue()
+        selector = self.selector
+        if selector == 'SFP':
+            voicetotemplate.station_frequency_position(format,voice)
+        elif selector == 'SF':
+            voicetotemplate.station_frequency(format,voice)
+        elif selector == 'S':
+            voicetotemplate.station(format,voice)
+        elif selector == 'F':
+            voicetotemplate.frequency(format,voice)
+        elif selector == 'P':
+            voicetotemplate.position(format,voice)
+        self.Close()
+
+    def quitwin(self,event):
+        self.Close()
+
 class MyApp(wx.App):
     def OnInit(self):
         frame = MainFrame(None, -1, 'ImageQuick')
@@ -152,6 +214,7 @@ class IpConnect(wx.Frame):
 
     def quitwin(self,event):
         self.Close()
+
 
 class AddVoice(wx.Frame):
     def __init__(self,parent,id):
