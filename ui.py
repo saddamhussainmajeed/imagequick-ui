@@ -1,4 +1,6 @@
 import wx
+import xlrd
+import common.xlsgrid as XG
 from common import ui_core
 from common import database
 from batch import voicetotemplate
@@ -53,13 +55,26 @@ class MainFrame(wx.Frame):
         sm1.Append(702,'Voice',kind=wx.ITEM_NORMAL)
         sm1.Append(703,'Template',kind=wx.ITEM_NORMAL)
         sm1.Append(704,'Producer',kind=wx.ITEM_NORMAL)
-        sm2.Append(607,'Voice',kind=wx.ITEM_NORMAL)
-        sm2.Append(607,'Producer',kind=wx.ITEM_NORMAL)
+        self.Bind(wx.EVT_MENU,self.monthly_format,id=701)
+        self.Bind(wx.EVT_MENU,self.monthly_voice,id=702)
+        self.Bind(wx.EVT_MENU,self.monthly_template,id=703)
+        self.Bind(wx.EVT_MENU,self.monthly_producer,id=704)
+        sm2.Append(705,'Voice',kind=wx.ITEM_NORMAL)
+        sm2.Append(706,'Producer',kind=wx.ITEM_NORMAL)
+        self.Bind(wx.EVT_MENU,self.pay_producer,id=706)
+        self.Bind(wx.EVT_MENU,self.pay_voice,id=705)
         analt.Append(601, 'Format')
         analt.Append(602, 'Voice')
         analt.Append(603, 'Template')
         analt.Append(604, 'Producer')
         analt.Append(605, 'Voice Format')
+
+        self.Bind(wx.EVT_MENU,self.analt_format,id=601)
+        self.Bind(wx.EVT_MENU,self.analt_voice,id=602)
+        self.Bind(wx.EVT_MENU,self.analt_template,id=603)
+        self.Bind(wx.EVT_MENU,self.analt_producer,id=604)
+        self.Bind(wx.EVT_MENU,self.analt_voice_format,id=605)
+
         analt.AppendMenu(606, 'Monthly Sheets',sm1)
         analt.AppendMenu(607, 'Monthly PayBills',sm2)
         
@@ -122,7 +137,7 @@ class MainFrame(wx.Frame):
         self.Close()
 
     def OnAbout(self,event):
-        dlg = wx.MessageDialog( self, "Developed By SHM\n Version 1.1", "ImageQuick", wx.OK)
+        dlg = wx.MessageDialog( self, "Developed By SHM\n Version 0.1", "ImageQuick", wx.OK)
         dlg.ShowModal()
         dlg.Destroy()
 
@@ -146,12 +161,61 @@ class MainFrame(wx.Frame):
     def batch_p(self,event):
         self.new = Batch_Box(parent=None,id=-1,selector='P')
         self.new.Show()
+    '''Actions for Analytics'''
+    def analt_voice(self,event):
+        analytics.chart_voices()
+        self.new = LoadXLS(filelocation='files/voice_analysis.xls',title='Voice Analytics')
+        self.new.Show()
+
+    def analt_format(self,event):
+        analytics.chart_formats()
+        self.new = LoadXLS(filelocation='files/format_analysis.xls',title='Fomat Analytics')
+        self.new.Show()
+
+    def analt_template(self,event):
+        analytics.chart_templates()
+        self.new = LoadXLS(filelocation='files/template_analysis.xls',title='Template Analytics')
+        self.new.Show()
+
+    def analt_producer(self,event):
+        analytics.chart_producers()
+        self.new = LoadXLS(filelocation='files/producer_analysis.xls',title='Producer Analytics')
+        self.new.Show()
+
+    def analt_voice_format(self,event):
+        analytics.chart_voice_format()
+        self.new = LoadXLS(filelocation='files/voice_format_analysis.xls',title='Voice-Format Analytics')
+        self.new.Show()
+
+    def monthly_voice(self,event):
+        self.new = Monthly_Analytics(parent=None,id=-1,selector='voice')
+        self.new.Show()
+
+    def monthly_format(self,event):
+        self.new = Monthly_Analytics(parent=None,id=-1,selector='format')
+        self.new.Show()
+
+    def monthly_producer(self,event):
+        self.new = Monthly_Analytics(parent=None,id=-1,selector='producer')
+        self.new.Show()
+
+    def monthly_template(self,event):
+        self.new = Monthly_Analytics(parent=None,id=-1,selector='template')
+        self.new.Show()
+
+    def pay_producer(self,event):
+        self.new = Monthly_Analytics(parent=None,id=-1,selector='pay_producer')
+        self.new.Show()
+
+    def pay_voice(self,event):
+        self.new = Monthly_Analytics(parent=None,id=-1,selector='pay_voice')
+        self.new.Show()
 
 '''Batch Opertation Class '''
 class Batch_Box(wx.Frame):
     def __init__(self,parent,id,selector):
         self.selector = selector
-        wx.Frame.__init__(self,parent,id,'Connect to Server',size=(210,180))
+        wx.Frame.__init__(self,parent,id,'Batch Operation',size=(210,180))
         wx.Frame.CentreOnScreen(self)
         inp=wx.Panel(self,-1,(-1,-1),(-1,-1))
         formats = ui_core.get_format_list()
@@ -181,6 +245,64 @@ class Batch_Box(wx.Frame):
         elif selector == 'P':
             voicetotemplate.position(format,voice)
         self.Close()
+
+    def quitwin(self,event):
+        self.Close()
+
+class Monthly_Analytics(wx.Frame):
+    ''' The Frame for Month and Year Selection'''
+
+    def __init__(self,parent,id,selector):
+        self.selector = selector
+        wx.Frame.__init__(self,parent,id,'Monthly Analytics',size=(210,180))
+        wx.Frame.CentreOnScreen(self)
+        inp=wx.Panel(self,-1,(-1,-1),(-1,-1))
+        years = ['2013']
+        months = ui_core.get_months()
+        wx.StaticText(inp,-1,"Select Month",pos=(10,20))
+        self.cb = wx.ComboBox(inp, pos=(10, 40), choices=months,style=wx.CB_READONLY)
+        wx.StaticText(inp,-1,"Select Year",pos=(10,70))
+        self.cb2 = wx.ComboBox(inp, pos=(10, 90), choices=years,style=wx.CB_READONLY)
+        but=wx.Button(inp,label='View',pos=(30,140),size=(65,-1))
+        but2=wx.Button(inp,label='Cancel',pos=(110,140),size=(65,-1))
+        but.Bind(wx.EVT_BUTTON,self.butact,but)
+        but2.Bind(wx.EVT_BUTTON,self.quitwin)
+
+
+    def butact(self,event):
+        month = ui_core.get_month_number(str(self.cb.GetValue()))
+        year = str(self.cb2.GetValue())
+        selector = self.selector
+        if selector == 'voice':
+            analytics.monthly_voice(month,year)
+            self.xl = LoadXLS(filelocation='files/monthly_voices.xls',title="Monthly Voice Analytics")
+            self.xl.Show()
+        elif selector == 'producer':
+            analytics.monthly_producer(month,year)
+            self.xl = LoadXLS(filelocation='files/monthly_producers.xls',title="Monthly Producer Analytics")
+            self.xl.Show()
+
+        elif selector == 'template':
+            analytics.monthly_templates(month,year)
+            self.xl = LoadXLS(filelocation='files/monthly_templates.xls',title="Monthly Template Analytics")
+            self.xl.Show()
+
+        elif selector == 'format':
+            analytics.monthly_format(month,year)
+            self.xl = LoadXLS(filelocation='files/monthly_formats.xls',title="Monthly Format Analytics")
+            self.xl.Show()
+
+        elif selector == 'pay_producer':
+            analytics.pay_producer(month,year)
+            self.xl = LoadXLS(filelocation='files/pay_producers.xls',title="")
+            self.xl.Show()
+
+        elif selector == 'pay_voice':
+            analytics.pay_voice(month,year)
+            self.xl = LoadXLS(filelocation='files/pay_voices.xls',title="")
+            self.xl.Show()
+        self.Close()
+
 
     def quitwin(self,event):
         self.Close()
@@ -538,7 +660,6 @@ class AddTemp( wx.Frame ):
             wx.CheckBox(scrollWin,-1,style,pos=(xx,xy))#.Bind(wx.EVT_CHECKBOX, self.check_event)
             xy +=20
         userbut=wx.Button(scrollWin,label='Add',pos=(130,1870),size=(100,-1))
-
 #end for
 
  
@@ -547,8 +668,32 @@ class AddTemp( wx.Frame ):
         scrollWin.SetScrollRate( 1, 1 )        
 
 
+class LoadXLS(wx.Frame):
+ 
+    #----------------------------------------------------------------------
+    def __init__(self,filelocation,title):
+        wx.Frame.__init__(self, None, wx.ID_ANY, title,size=(500,400))
+        wx.Frame.CentreOnScreen(self)
+        panel = wx.Panel(self, wx.ID_ANY)
+ 
+        filename = filelocation
+        book = xlrd.open_workbook(filename, formatting_info=1)
+        sheetname = "sheet1"
+        sheet = book.sheet_by_name(sheetname)
+        rows, cols = sheet.nrows, sheet.ncols
+        comments, texts = XG.ReadExcelCOM(filename, sheetname, rows, cols)
+ 
+        xlsGrid = XG.XLSGrid(panel)
+        xlsGrid.PopulateGrid(book, sheet, texts, comments)
+ 
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer.Add(xlsGrid, 1, wx.EXPAND, 5)
+        panel.SetSizer(sizer)
+
 app = MyApp(0)
 app.MainLoop()
+
+
 
 
 

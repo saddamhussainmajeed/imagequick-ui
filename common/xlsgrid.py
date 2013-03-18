@@ -1925,8 +1925,9 @@ class XLSGrid(gridlib.Grid):
                 current = sheet.colinfo_map[j].width
             else:
                 current = sheet.defcolwidth 
-
-            col_width = int(round(float(default_width)*current/256.0))                
+            col_width = 3
+            if current is not None:
+              col_width = int(round(float(default_width)*current/256.0))                
             self.SetColSize(j, col_width)
 
         for merged in sheet.merged_cells:

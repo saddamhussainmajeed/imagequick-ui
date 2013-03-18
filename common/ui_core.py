@@ -1,5 +1,5 @@
 from common import database
-
+import calendar
 def get_voice_list():
 	voicelist = []
 	for voice in database.db.voices.find():
@@ -41,3 +41,16 @@ def get_voice_ids(formats):
 	for format in formats:
 		idlist.append(str(database.db.voices.find_one({'name':format})['uid']))
 	return idlist
+
+def get_months():
+	months = []
+	for month in calendar.month_name:
+		months.append(month)
+	return months
+
+def get_month_number(month):
+	months = get_months()
+	number = str(months.index(month))
+	return number.zfill(2)
+
+
