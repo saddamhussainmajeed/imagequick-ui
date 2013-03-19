@@ -593,9 +593,9 @@ class AddTemp( wx.Frame ):
         wx.Frame.__init__( self, None,-1, "Add a new Template piece", size=(350, 400) )
         scrollWin = wx.PyScrolledWindow( self, -1 )
 # Add Code Below
-        
-        wx.StaticText(scrollWin,-1,"Template Name",pos=(40,30))
-        self.tn=wx.TextCtrl(scrollWin,-1,"",pos=(180,25),size=(120,30))
+        y = 30
+        wx.StaticText(scrollWin,-1,"Template Name",pos=(40,y))
+        self.tn=wx.TextCtrl(scrollWin,-1,"",pos=(180,y),size=(120,30))
         wx.StaticText(scrollWin,-1,"File Name",pos=(40,70))
         self.fn=wx.TextCtrl(scrollWin,-1,"",pos=(180,65),size=(120,30))
         wx.StaticText(scrollWin,-1,"Length",pos=(40,110))
