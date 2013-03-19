@@ -1,4 +1,4 @@
-from common.pymongo import MongoClient
+from pymongo import MongoClient
 from subprocess import call
 import datetime
 import os
