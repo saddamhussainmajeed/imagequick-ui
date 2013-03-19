@@ -183,7 +183,7 @@ class MainFrame(wx.Frame):
         self.timer.Show()
         analytics.chart_templates()
         self.timer.Close()
-        self.new = LoadXLS(filelocation='files/template_analysis.xls',title='Template Analytics')
+        self.new = LoadXLS(filelocation='files/templates_analysis.xls',title='Template Analytics')
         self.new.Show()
 
     def analt_producer(self,event):
@@ -717,6 +717,7 @@ class LoadXLS(wx.Frame):
 class Timer(wx.Frame):
     def __init__(self):
         wx.Frame.__init__(self, None, -1, 'Please Wait...', size=(250, 100))
+        wx.Frame.CentreOnScreen(self)
         panel = wx.Panel(self, -1)
         wx.StaticText(panel, -1, " Please Wait...")
         self.count = 0
