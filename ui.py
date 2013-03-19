@@ -163,27 +163,42 @@ class MainFrame(wx.Frame):
         self.new.Show()
     '''Actions for Analytics'''
     def analt_voice(self,event):
+        self.timer=Timer()
+        self.timer.Show()
         analytics.chart_voices()
+        self.timer.Close()
         self.new = LoadXLS(filelocation='files/voice_analysis.xls',title='Voice Analytics')
         self.new.Show()
 
     def analt_format(self,event):
+        self.timer=Timer()
+        self.timer.Show()
         analytics.chart_formats()
+        self.timer.Close()
         self.new = LoadXLS(filelocation='files/format_analysis.xls',title='Fomat Analytics')
         self.new.Show()
 
     def analt_template(self,event):
+        self.timer=Timer()
+        self.timer.Show()
         analytics.chart_templates()
+        self.timer.Close()
         self.new = LoadXLS(filelocation='files/template_analysis.xls',title='Template Analytics')
         self.new.Show()
 
     def analt_producer(self,event):
+        self.timer=Timer()
+        self.timer.Show()
         analytics.chart_producers()
+        self.timer.Close()
         self.new = LoadXLS(filelocation='files/producer_analysis.xls',title='Producer Analytics')
         self.new.Show()
 
     def analt_voice_format(self,event):
+        self.timer=Timer()
+        self.timer.Show()
         analytics.chart_voice_format()
+        self.timer.Close()
         self.new = LoadXLS(filelocation='files/voice_format_analysis.xls',title='Voice-Format Analytics')
         self.new.Show()
 
@@ -234,6 +249,8 @@ class Batch_Box(wx.Frame):
         format = self.cb.GetValue()
         voice = self.cb2.GetValue()
         selector = self.selector
+        self.timer=Timer()
+        self.timer.Show()
         if selector == 'SFP':
             voicetotemplate.station_frequency_position(format,voice)
         elif selector == 'SF':
@@ -244,6 +261,7 @@ class Batch_Box(wx.Frame):
             voicetotemplate.frequency(format,voice)
         elif selector == 'P':
             voicetotemplate.position(format,voice)
+        self.timer.Close()
         self.Close()
 
     def quitwin(self,event):
@@ -273,6 +291,8 @@ class Monthly_Analytics(wx.Frame):
         month = ui_core.get_month_number(str(self.cb.GetValue()))
         year = str(self.cb2.GetValue())
         selector = self.selector
+        self.timer=Timer()
+        self.timer.Show()
         if selector == 'voice':
             analytics.monthly_voice(month,year)
             self.xl = LoadXLS(filelocation='files/monthly_voices.xls',title="Monthly Voice Analytics")
@@ -301,6 +321,7 @@ class Monthly_Analytics(wx.Frame):
             analytics.pay_voice(month,year)
             self.xl = LoadXLS(filelocation='files/pay_voices.xls',title="")
             self.xl.Show()
+        self.timer.Close()
         self.Close()
 
 
@@ -330,8 +351,11 @@ class IpConnect(wx.Frame):
         but2.Bind(wx.EVT_BUTTON,self.quitwin)
 
     def butact(self,event):
+        self.timer=Timer()
+        self.timer.Show()
         database.connect(self.s.GetValue(),int(self.p.GetValue()))
         print database.db
+        self.timer.Close()
         self.Close()
 
     def quitwin(self,event):
@@ -689,6 +713,21 @@ class LoadXLS(wx.Frame):
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(xlsGrid, 1, wx.EXPAND, 5)
         panel.SetSizer(sizer)
+
+class Timer(wx.Frame):
+    def __init__(self):
+        wx.Frame.__init__(self, None, -1, 'Please Wait...', size=(250, 100))
+        panel = wx.Panel(self, -1)
+        wx.StaticText(panel, -1, " Please Wait...")
+        self.count = 0
+        self.gauge = wx.Gauge(panel, -1,100,(25,35), (200, 25))
+        self.gauge.SetBezelFace(3)
+        self.gauge.SetShadowWidth(3)
+        self.Bind(wx.EVT_IDLE, self.OnIdle)
+
+
+    def OnIdle(self, event):
+        self.gauge.Pulse()
 
 app = MyApp(0)
 app.MainLoop()
