@@ -1,6 +1,6 @@
 from common.core_utils import *
-from pandas import Series, DataFrame
-import pandas as pd
+#from pandas import Series, DataFrame
+#import pandas as pd
 from common import database
 
 def chart_templates():

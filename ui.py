@@ -24,14 +24,19 @@ class MainFrame(wx.Frame):
         quit = wx.MenuItem(menufile, 105, '&Quit\tCtrl+Q')
         menufile.AppendItem(quit)
         
+
+        
         createmenu.Append(201, 'Voice Talent')
-        createmenu.Append(202, 'Template')
-        createmenu.Append(203, 'Hook Template')
         createmenu.Append(204, 'Format')
-        createmenu.Append(205, 'Positioning Statement')
         createmenu.Append(206, 'Station')
         createmenu.Append(207, 'Frequency')
         createmenu.Append(208, 'Delivery Style')
+        createmenu.Append(205, 'Positioning Statement')
+        createmenu.Append(202, 'Template')
+        createmenu.AppendSeparator()
+        createmenu.Append(209, 'Hook')
+        createmenu.Append(203, 'Hook Template')
+        createmenu.Append(210, 'Slogan Length')
         
                         
         sub=wx.Menu()
@@ -96,7 +101,9 @@ class MainFrame(wx.Frame):
         self.Bind(wx.EVT_MENU,self.actfre,id=207)
         self.Bind(wx.EVT_MENU,self.actdel,id=208)
         self.Bind(wx.EVT_MENU,self.OnAbout,id=501)
-        #self.Bind(wx.EVT_MENU,self.OnAbout,id=701)
+        self.Bind(wx.EVT_MENU,self.adhook,id=209)
+        self.Bind(wx.EVT_MENU,self.actslo,id=210)
+
     def actconnect(self,event):
         self.new=IpConnect(parent=None,id=-1)
         self.new.Show(True)
@@ -129,9 +136,18 @@ class MainFrame(wx.Frame):
         self.new=AddHook()
         self.new.Show(True)
 
+    def adhook(self,event):
+        self.new=NewHook(parent=None,id=-1)
+        self.new.Show(True)
+
     def acttemp(self,event):
         self.new=AddTemp()
         self.new.Show(True)
+
+    def actslo(self,event):
+        self.new=AddSlo(parent=None,id=-1)
+        self.new.Show(True)
+    
 
     def OnQuit(self, event):
         self.Close()
@@ -321,6 +337,7 @@ class Monthly_Analytics(wx.Frame):
             analytics.pay_voice(month,year)
             self.xl = LoadXLS(filelocation='files/pay_voices.xls',title="")
             self.xl.Show()
+
         self.timer.Close()
         self.Close()
 
@@ -334,6 +351,56 @@ class MyApp(wx.App):
         frame.Show(True)
         #self.SetTopWindow(frame)
         return True
+
+class AddSlo(wx.Frame):
+    def __init__(self,parent,id):
+        wx.Frame.__init__(self,parent,id,'Add Slogan Length',size=(400,300))
+        wx.Frame.CentreOnScreen(self)
+        inp=wx.Panel(self,-1,(-1,-1),(-1,-1))
+        wx.StaticText(inp,-1,"Slogan",pos=(40,40))
+        self.sl=wx.TextCtrl(inp,-1,"",pos=(120,35),size=(200,30))
+        wx.StaticText(inp,-1,"Length",pos=(40,80))
+        self.le=wx.TextCtrl(inp,-1,"",pos=(120,75),size=(200,30))
+        but=wx.Button(inp,label='Add',pos=(150,130),size=(65,-1)).Bind(wx.EVT_BUTTON,self.butact)
+
+    def butact(self,event):
+        slog = {
+                'slogan':self.sl.GetValue(),
+                'length':self.le.GetValue(),
+        }
+        print slog
+
+class NewHook(wx.Frame):
+    def __init__(self,parent,id):
+        wx.Frame.__init__(self,parent,id,'Add Hooks',size=(400,300))
+        wx.Frame.CentreOnScreen(self)
+        inp=wx.Panel(self,-1,(-1,-1),(-1,-1))
+        formats = ui_core.get_format_list()
+        categories = ui_core.get_category_list()
+        wx.StaticText(inp,-1,"Hook",pos=(40,40))
+        self.hk=wx.TextCtrl(inp,-1,"",pos=(180,35),size=(200,30))
+        wx.StaticText(inp,-1,"Select Format",pos=(40,80))
+        self.cb = wx.ComboBox(inp, pos=(180, 75), choices=formats,style=wx.CB_READONLY)
+        wx.StaticText(inp,-1,"Select Category",pos=(40,120))
+        self.cb2 = wx.ComboBox(inp, pos=(180, 115), choices=categories,style=wx.CB_READONLY)
+        wx.StaticText(inp,-1,"Normal Length",pos=(40,160))
+        self.nl=wx.TextCtrl(inp,-1,"",pos=(180,155),size=(200,30))
+        wx.StaticText(inp,-1,"VoiceOver Length",pos=(40,200))
+        self.vl=wx.TextCtrl(inp,-1,"",pos=(180,195),size=(200,30))
+        but=wx.Button(inp,label='Add',pos=(170,250),size=(65,-1)).Bind(wx.EVT_BUTTON,self.butact)
+
+    def butact(self,event):
+        hook = {
+                'name':self.hk.GetValue(),
+                'format':self.cb.GetValue(),
+                'category':self.cb2.GetValue(),
+                'vo_length':self.vl.GetValue(),
+                'length':self.nl.GetValue(),
+                'vo_hook':self.hk.GetValue()+'_VO'
+        }
+        print hook
+        
+
 
 class IpConnect(wx.Frame):
     def __init__(self,parent,id):
@@ -532,7 +599,13 @@ class AddHook( wx.Frame ):
         wx.Frame.__init__( self, None,-1, "Add Hook Template", size=(350, 400) )
         scrollWin = wx.PyScrolledWindow( self, -1 )
 # Add Code Below
-        
+        self.form_list= []
+        self.posvoice_list= []
+        self.posstyle_list= []
+        self.stavoice_list= []
+        self.stastyle_list= []
+        self.frevoice_list= []
+        self.frestyle_list= []
         wx.StaticText(scrollWin,-1,"Template Name",pos=(40,30))
         self.tn=wx.TextCtrl(scrollWin,-1,"",pos=(180,25),size=(120,30))
         wx.StaticText(scrollWin,-1,"File Name",pos=(40,70))
@@ -545,14 +618,14 @@ class AddHook( wx.Frame ):
         x = 180 # Magic numbers !?
         y = 200
         for format in ui_core.get_format_list():
-            wx.CheckBox(scrollWin,-1,format,pos=(x,y))#.Bind(wx.EVT_CHECKBOX, self.check_event)
+            wx.CheckBox(scrollWin,-1,format,pos=(x,y)).Bind(wx.EVT_CHECKBOX, self.check_for)
             y +=20
         wx.StaticText(scrollWin,-1,"SLOGAN DETAILS",pos=(40,300))
         wx.StaticText(scrollWin,-1,"Associated Voices",pos=(40,320))
         u=180
         v=340
         for voice in ui_core.get_voice_list():
-            wx.CheckBox(scrollWin,-1,voice,pos=(u,v))#.Bind(wx.EVT_CHECKBOX, self.check_event)
+            wx.CheckBox(scrollWin,-1,voice,pos=(u,v)).Bind(wx.EVT_CHECKBOX, self.check_posv)
             v +=20
         wx.StaticText(scrollWin,-1,"Delay/Cue",pos=(40,490))
         self.dq=wx.TextCtrl(scrollWin,-1,"",pos=(180,485),size=(120,30))
@@ -560,14 +633,14 @@ class AddHook( wx.Frame ):
         ff=180
         fg=530
         for style in ui_core.get_style_list():
-            wx.CheckBox(scrollWin,-1,style,pos=(ff,fg))#.Bind(wx.EVT_CHECKBOX, self.check_event)
+            wx.CheckBox(scrollWin,-1,style,pos=(ff,fg)).Bind(wx.EVT_CHECKBOX, self.check_poss)
             fg +=20
         wx.StaticText(scrollWin,-1,"STATION DETAILS",pos=(40,780))
         wx.StaticText(scrollWin,-1,"Associated Voices",pos=(40,800))
         ss=180
         st=815
         for voice in ui_core.get_voice_list():
-            wx.CheckBox(scrollWin,-1,voice,pos=(ss,st))#.Bind(wx.EVT_CHECKBOX, self.check_event)
+            wx.CheckBox(scrollWin,-1,voice,pos=(ss,st)).Bind(wx.EVT_CHECKBOX, self.check_stav)
             st +=20
         wx.StaticText(scrollWin,-1,"No: of Words",pos=(40,970))
         self.nw=wx.TextCtrl(scrollWin,-1,"",pos=(180,965),size=(120,30))
@@ -577,14 +650,14 @@ class AddHook( wx.Frame ):
         cc=180
         cd=1050
         for style in ui_core.get_style_list():
-            wx.CheckBox(scrollWin,-1,style,pos=(cc,cd))#.Bind(wx.EVT_CHECKBOX, self.check_event)
+            wx.CheckBox(scrollWin,-1,style,pos=(cc,cd)).Bind(wx.EVT_CHECKBOX, self.check_stas)
             cd +=20
         wx.StaticText(scrollWin,-1,"FREQUENCY DETAILS",pos=(40,1300))
         wx.StaticText(scrollWin,-1,"Associated Voices",pos=(40,1320))
         ab=180
         ac=1335
         for voice in ui_core.get_voice_list():
-            wx.CheckBox(scrollWin,-1,voice,pos=(ab,ac))#.Bind(wx.EVT_CHECKBOX, self.check_event)
+            wx.CheckBox(scrollWin,-1,voice,pos=(ab,ac)).Bind(wx.EVT_CHECKBOX, self.check_frev)
             ac +=20
         wx.StaticText(scrollWin,-1,"Delay/Cue",pos=(40,1485))
         self.dcc=wx.TextCtrl(scrollWin,-1,"",pos=(180,1480),size=(120,30))
@@ -592,7 +665,7 @@ class AddHook( wx.Frame ):
         xx=180
         xy=1525
         for style in ui_core.get_style_list():
-            wx.CheckBox(scrollWin,-1,style,pos=(xx,xy))#.Bind(wx.EVT_CHECKBOX, self.check_event)
+            wx.CheckBox(scrollWin,-1,style,pos=(xx,xy)).Bind(wx.EVT_CHECKBOX, self.check_fres)
             xy +=20
         wx.StaticText(scrollWin,-1,"POST HOOK Details",pos=(40,1775))
         wx.StaticText(scrollWin,-1,"File Name",pos=(40,1805))
@@ -604,20 +677,101 @@ class AddHook( wx.Frame ):
         wx.StaticText(scrollWin,-1,"Delay/Cue",pos=(40,1955))
         self.d2=wx.TextCtrl(scrollWin,-1,"",pos=(180,1950),size=(120,30))
         userbut=wx.Button(scrollWin,label='Add',pos=(120,2000),size=(100,-1))
+        userbut.Bind(wx.EVT_BUTTON,self.butact,userbut)
+        scrollWin.SetScrollbars(1,20,1,105)
+        scrollWin.SetScrollRate( 1,5 )
 
+    def check_for(self,e):
+        sender = e.GetEventObject()
+        if sender.GetValue() == True:
+            self.form_list.append(sender.Label)
+        else:
+            self.form_list.remove(sender.Label)
+
+    def check_posv(self,e):
+        sender = e.GetEventObject()
+        if sender.GetValue() == True:
+            self.posvoice_list.append(sender.Label)
+        else:
+            self.posvoice_list.remove(sender.Label)
+
+    def check_poss(self,e):
+        sender = e.GetEventObject()
+        if sender.GetValue() == True:
+            self.posstyle_list.append(sender.Label)
+        else:
+            self.posstyle_list.remove(sender.Label)
+
+    def check_stav(self,e):
+        sender = e.GetEventObject()
+        if sender.GetValue() == True:
+            self.stavoice_list.append(sender.Label)
+        else:
+            self.stavoice_list.remove(sender.Label)
+
+    def check_stas(self,e):
+        sender = e.GetEventObject()
+        if sender.GetValue() == True:
+            self.stastyle_list.append(sender.Label)
+        else:
+            self.stastyle_list.remove(sender.Label)
+
+    def check_frev(self,e):
+        sender = e.GetEventObject()
+        if sender.GetValue() == True:
+            self.frevoice_list.append(sender.Label)
+        else:
+            self.frevoice_list.remove(sender.Label)
+
+    def check_fres(self,e):
+        sender = e.GetEventObject()
+        if sender.GetValue() == True:
+            self.frestyle_list.append(sender.Label)
+        else:
+            self.frestyle_list.remove(sender.Label)
+
+    def butact(self,event):
+        format = {
+            'name':self.tn.GetValue(),
+            'filename1':self.fn.GetValue(),
+            'filename2':self.f1.GetValue(),
+            'producer':self.po.GetValue(),
+            'formatids':ui_core.get_format_ids(self.form_list),
+            'posCue':self.dq.GetValue(),
+            'posVoiceids':ui_core.get_voice_ids(self.posvoice_list),
+            'posStyleids':ui_core.get_style_ids(self.posstyle_list),
+            'statWords':self.nw.GetValue(),
+            'statCue1':self.dc.GetValue(),
+            'statCue2':self.d1.GetValue(),
+            'statVoiceids':ui_core.get_voice_ids(self.stavoice_list),
+            'statStyleids':ui_core.get_style_ids(self.stastyle_list),
+            'freCue1':self.dcc.GetValue(),
+            'freCue2':self.d2.GetValue(),
+            'freVoiceids':ui_core.get_voice_ids(self.frevoice_list),
+            'freStyleids':ui_core.get_style_ids(self.frestyle_list),
+            'price':self.pr.GetValue()
+        }
+        print format
+        #create.format(format)
+        self.Close()
 #end for
 
  
 #Till Here
-        scrollWin.SetScrollbars(1,20,1,105)
-        scrollWin.SetScrollRate( 1,5 )
+        
 
 class AddTemp( wx.Frame ): 
     def __init__( self ):
         wx.Frame.__init__( self, None,-1, "Add a new Template piece", size=(350, 400) )
         scrollWin = wx.PyScrolledWindow( self, -1 )
 # Add Code Below
-        
+        self.form_list= []
+        self.posvoice_list= []
+        self.posstyle_list= []
+        self.stavoice_list= []
+        self.stastyle_list= []
+        self.frevoice_list= []
+        self.frestyle_list= []
         wx.StaticText(scrollWin,-1,"Template Name",pos=(40,30))
         self.tn=wx.TextCtrl(scrollWin,-1,"",pos=(180,25),size=(120,30))
         wx.StaticText(scrollWin,-1,"File Name",pos=(40,70))
@@ -632,48 +786,48 @@ class AddTemp( wx.Frame ):
         x = 180 # Magic numbers !?
         y = 235
         for format in ui_core.get_format_list():
-            wx.CheckBox(scrollWin,-1,format,pos=(x,y))#.Bind(wx.EVT_CHECKBOX, self.check_event)
+            wx.CheckBox(scrollWin,-1,format,pos=(x,y)).Bind(wx.EVT_CHECKBOX, self.check_for)
             y +=20
         wx.StaticText(scrollWin,-1,"SLOGAN DETAILS",pos=(40,335))
         wx.StaticText(scrollWin,-1,"Associated Voices",pos=(40,355))
         u=180
         v=375
         for voice in ui_core.get_voice_list():
-            wx.CheckBox(scrollWin,-1,voice,pos=(u,v))#.Bind(wx.EVT_CHECKBOX, self.check_event)
+            wx.CheckBox(scrollWin,-1,voice,pos=(u,v)).Bind(wx.EVT_CHECKBOX, self.check_posv)
             v +=20
         wx.StaticText(scrollWin,-1,"No: of Words",pos=(40,525))
-        self.dq=wx.TextCtrl(scrollWin,-1,"",pos=(180,520),size=(120,30))
+        self.nw=wx.TextCtrl(scrollWin,-1,"",pos=(180,520),size=(120,30))
         wx.StaticText(scrollWin,-1,"Delay/Cue",pos=(40,565))
         self.dq=wx.TextCtrl(scrollWin,-1,"",pos=(180,560),size=(120,30))
         wx.StaticText(scrollWin,-1,"Associated Styles",pos=(40,580))
         ff=180
         fg=600
         for style in ui_core.get_style_list():
-            wx.CheckBox(scrollWin,-1,style,pos=(ff,fg))#.Bind(wx.EVT_CHECKBOX, self.check_event)
+            wx.CheckBox(scrollWin,-1,style,pos=(ff,fg)).Bind(wx.EVT_CHECKBOX, self.check_poss)
             fg +=20
         wx.StaticText(scrollWin,-1,"STATION DETAILS",pos=(40,850))
         wx.StaticText(scrollWin,-1,"Associated Voices",pos=(40,870))
         ss=180
         st=890
         for voice in ui_core.get_voice_list():
-            wx.CheckBox(scrollWin,-1,voice,pos=(ss,st))#.Bind(wx.EVT_CHECKBOX, self.check_event)
+            wx.CheckBox(scrollWin,-1,voice,pos=(ss,st)).Bind(wx.EVT_CHECKBOX, self.check_stav)
             st +=20
         wx.StaticText(scrollWin,-1,"No: of Words",pos=(40,1045))
-        self.nw=wx.TextCtrl(scrollWin,-1,"",pos=(180,1040),size=(120,30))
+        self.nw1=wx.TextCtrl(scrollWin,-1,"",pos=(180,1040),size=(120,30))
         wx.StaticText(scrollWin,-1,"Delay/Cue",pos=(40,1085))
         self.dc=wx.TextCtrl(scrollWin,-1,"",pos=(180,1080),size=(120,30))
         wx.StaticText(scrollWin,-1,"Associated Styles",pos=(40,1110))
         cc=180
         cd=1130
         for style in ui_core.get_style_list():
-            wx.CheckBox(scrollWin,-1,style,pos=(cc,cd))#.Bind(wx.EVT_CHECKBOX, self.check_event)
+            wx.CheckBox(scrollWin,-1,style,pos=(cc,cd)).Bind(wx.EVT_CHECKBOX, self.check_stas)
             cd +=20
         wx.StaticText(scrollWin,-1,"FREQUENCY DETAILS",pos=(40,1380))
         wx.StaticText(scrollWin,-1,"Associated Voices",pos=(40,1400))
         ab=180
         ac=1420
         for voice in ui_core.get_voice_list():
-            wx.CheckBox(scrollWin,-1,voice,pos=(ab,ac))#.Bind(wx.EVT_CHECKBOX, self.check_event)
+            wx.CheckBox(scrollWin,-1,voice,pos=(ab,ac)).Bind(wx.EVT_CHECKBOX, self.check_frev)
             ac +=20
         wx.StaticText(scrollWin,-1,"Delay/Cue",pos=(40,1570))
         self.dcc=wx.TextCtrl(scrollWin,-1,"",pos=(180,1565),size=(120,30))
@@ -681,15 +835,90 @@ class AddTemp( wx.Frame ):
         xx=180
         xy=1610
         for style in ui_core.get_style_list():
-            wx.CheckBox(scrollWin,-1,style,pos=(xx,xy))#.Bind(wx.EVT_CHECKBOX, self.check_event)
+            wx.CheckBox(scrollWin,-1,style,pos=(xx,xy)).Bind(wx.EVT_CHECKBOX, self.check_fres)
             xy +=20
         userbut=wx.Button(scrollWin,label='Add',pos=(130,1870),size=(100,-1))
+        userbut.Bind(wx.EVT_BUTTON,self.butact,userbut)
+        scrollWin.SetScrollbars(1,20,1,100)
+        scrollWin.SetScrollRate( 1, 1 )        
+
+    def check_for(self,e):
+        sender = e.GetEventObject()
+        if sender.GetValue() == True:
+            self.form_list.append(sender.Label)
+        else:
+            self.form_list.remove(sender.Label)
+
+    def check_posv(self,e):
+        sender = e.GetEventObject()
+        if sender.GetValue() == True:
+            self.posvoice_list.append(sender.Label)
+        else:
+            self.posvoice_list.remove(sender.Label)
+
+    def check_poss(self,e):
+        sender = e.GetEventObject()
+        if sender.GetValue() == True:
+            self.posstyle_list.append(sender.Label)
+        else:
+            self.posstyle_list.remove(sender.Label)
+
+    def check_stav(self,e):
+        sender = e.GetEventObject()
+        if sender.GetValue() == True:
+            self.stavoice_list.append(sender.Label)
+        else:
+            self.stavoice_list.remove(sender.Label)
+
+    def check_stas(self,e):
+        sender = e.GetEventObject()
+        if sender.GetValue() == True:
+            self.stastyle_list.append(sender.Label)
+        else:
+            self.stastyle_list.remove(sender.Label)
+
+    def check_frev(self,e):
+        sender = e.GetEventObject()
+        if sender.GetValue() == True:
+            self.frevoice_list.append(sender.Label)
+        else:
+            self.frevoice_list.remove(sender.Label)
+
+    def check_fres(self,e):
+        sender = e.GetEventObject()
+        if sender.GetValue() == True:
+            self.frestyle_list.append(sender.Label)
+        else:
+            self.frestyle_list.remove(sender.Label)
+
+    def butact(self,event):
+        format = {
+            'statCue':self.dc.GetValue(),
+            'name':self.tn.GetValue(),
+            'producer':self.po.GetValue(),
+            'posCue':self.dq.GetValue(),
+            'price':self.pr.GetValue(),
+            'statWords':self.nw1.GetValue(),
+            'filename':self.fn.GetValue(),
+            'freCue':self.dcc.GetValue(),
+            'length':self.le.GetValue(),
+            'formatids':ui_core.get_format_ids(self.form_list),
+            'freStyleids':ui_core.get_style_ids(self.frestyle_list),
+            'freVoiceids':ui_core.get_voice_ids(self.frevoice_list),
+            'statStyleids':ui_core.get_style_ids(self.stastyle_list),
+            'posVoiceids':ui_core.get_voice_ids(self.posvoice_list),
+            'posStyleids':ui_core.get_style_ids(self.posstyle_list),
+            'statVoiceids':ui_core.get_voice_ids(self.stavoice_list),
+            'posWords':self.nw.GetValue(),
+        }
+        print format
+        #create.format(format)
+        self.Close()
+
 #end for
 
  
 #Till Here
-        scrollWin.SetScrollbars(1,20,1,100)
-        scrollWin.SetScrollRate( 1, 1 )        
 
 
 class LoadXLS(wx.Frame):
@@ -731,10 +960,6 @@ class Timer(wx.Frame):
 
 app = MyApp(0)
 app.MainLoop()
-
-
-
-
 
 
 

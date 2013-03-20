@@ -18,6 +18,12 @@ def get_template_list():
 		templatelist.append(template['name'])
 	return templatelist
 
+def get_hook_list():
+	hooks = []
+	for hook in database.db.hooks.find():
+		hooks.append(hook['hook'])
+	return hooks
+
 def get_producer_list():
 	producer_list = []
 	for template in database.db.templates.find():
@@ -30,6 +36,10 @@ def get_format_list():
 		formatlist.append(format['name'])
 	return formatlist
 
+def get_category_list():
+	list = ['current','recurrent','gold','special']
+	return list
+
 def get_format_ids(formats):
 	idlist = []
 	for format in formats:
@@ -40,6 +50,12 @@ def get_voice_ids(formats):
 	idlist = []
 	for format in formats:
 		idlist.append(str(database.db.voices.find_one({'name':format})['uid']))
+	return idlist
+
+def get_style_ids(styles):
+	idlist = []
+	for style in styles:
+		idlist.append(str(database.db.styles.find_one({'name':style})['uid']))
 	return idlist
 
 def get_months():
