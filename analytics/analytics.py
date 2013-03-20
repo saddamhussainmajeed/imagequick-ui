@@ -83,9 +83,9 @@ def chart_producers():
 	for event in database.db.events.find():
 		if event['producer'] is not None:
 			if event['event'] == 'play':
-				chart.play[event['producer']] += 1
+				chart.play[event['producer'].upper()] += 1
 			elif event['event'] == 'purchase':
-				chart.buy[event['producer']] += 1
+				chart.buy[event['producer'].upper()] += 1
 	chart['b2p_percent'] = chart.buy/chart.play*100
 	chart.sort_index()
 	chart.to_excel('files/producer_analysis.xls')

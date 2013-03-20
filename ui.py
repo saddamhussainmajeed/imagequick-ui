@@ -199,7 +199,7 @@ class MainFrame(wx.Frame):
         self.timer.Show()
         analytics.chart_templates()
         self.timer.Close()
-        self.new = LoadXLS(filelocation='files/template_analysis.xls',title='Template Analytics')
+        self.new = LoadXLS(filelocation='files/templates_analysis.xls',title='Template Analytics')
         self.new.Show()
 
     def analt_producer(self,event):
@@ -408,7 +408,7 @@ class IpConnect(wx.Frame):
         wx.Frame.CentreOnScreen(self)
         inp=wx.Panel(self,-1,(-1,-1),(-1,-1))
         wx.StaticText(inp,-1,"Server IP",pos=(100,80))
-        self.s=wx.TextCtrl(inp,-1,"",pos=(225,75),size=(150,30))
+        self.s=wx.TextCtrl(inp,-1,"db.image-quick.com",pos=(225,75),size=(150,30))
         wx.StaticText(inp,-1,"PORT",pos=(100,120))
         self.p=wx.TextCtrl(inp,-1,"27017",pos=(225,115),size=(100,30))
         self.p.SetInsertionPoint(0)
@@ -946,6 +946,7 @@ class LoadXLS(wx.Frame):
 class Timer(wx.Frame):
     def __init__(self):
         wx.Frame.__init__(self, None, -1, 'Please Wait...', size=(250, 100))
+        wx.Frame.CentreOnScreen(self)
         panel = wx.Panel(self, -1)
         wx.StaticText(panel, -1, " Please Wait...")
         self.count = 0
@@ -956,6 +957,7 @@ class Timer(wx.Frame):
 
 
     def OnIdle(self, event):
+        print "*"
         self.gauge.Pulse()
 
 app = MyApp(0)
