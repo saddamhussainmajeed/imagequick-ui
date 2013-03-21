@@ -9,7 +9,7 @@ from crud import create
 
 
 class MainFrame(wx.Frame):
-    def __init__(self, parent, id, title):
+    def __init__(self,parent,id, title):
         wx.Frame.__init__(self, parent, id, title, wx.DefaultPosition, wx.Size(600,400))
         menubar = wx.MenuBar()
         
@@ -288,7 +288,7 @@ class Monthly_Analytics(wx.Frame):
 
     def __init__(self,parent,id,selector):
         self.selector = selector
-        wx.Frame.__init__(self,parent,id,'Monthly Analytics',size=(210,180))
+        wx.Frame.__init__(self,parent,id,'Monthly Analytics',size=(210,220))
         wx.Frame.CentreOnScreen(self)
         inp=wx.Panel(self,-1,(-1,-1),(-1,-1))
         years = ['2013']
@@ -408,7 +408,7 @@ class IpConnect(wx.Frame):
         wx.Frame.CentreOnScreen(self)
         inp=wx.Panel(self,-1,(-1,-1),(-1,-1))
         wx.StaticText(inp,-1,"Server IP",pos=(100,80))
-        self.s=wx.TextCtrl(inp,-1,"db.image-quick.com",pos=(225,75),size=(150,30))
+        self.s=wx.TextCtrl(inp,-1,pos=(225,75),size=(150,30))
         wx.StaticText(inp,-1,"PORT",pos=(100,120))
         self.p=wx.TextCtrl(inp,-1,"27017",pos=(225,115),size=(100,30))
         self.p.SetInsertionPoint(0)
@@ -620,65 +620,90 @@ class AddHook( wx.Frame ):
         for format in ui_core.get_format_list():
             wx.CheckBox(scrollWin,-1,format,pos=(x,y)).Bind(wx.EVT_CHECKBOX, self.check_for)
             y +=20
-        wx.StaticText(scrollWin,-1,"SLOGAN DETAILS",pos=(40,300))
-        wx.StaticText(scrollWin,-1,"Associated Voices",pos=(40,320))
+        wx.StaticText(scrollWin,-1,"SLOGAN DETAILS",pos=(40,y))
+        y+=30
+        wx.StaticText(scrollWin,-1,"Associated Voices",pos=(40,y))
         u=180
-        v=340
+        y+=30
         for voice in ui_core.get_voice_list():
-            wx.CheckBox(scrollWin,-1,voice,pos=(u,v)).Bind(wx.EVT_CHECKBOX, self.check_posv)
-            v +=20
-        wx.StaticText(scrollWin,-1,"Delay/Cue",pos=(40,490))
-        self.dq=wx.TextCtrl(scrollWin,-1,"",pos=(180,485),size=(120,30))
-        wx.StaticText(scrollWin,-1,"Associated Styles",pos=(40,515))
+            wx.CheckBox(scrollWin,-1,voice,pos=(u,y)).Bind(wx.EVT_CHECKBOX, self.check_posv)
+            y+=20
+        y+=30
+        wx.StaticText(scrollWin,-1,"Delay/Cue",pos=(40,y))
+        y-=5
+        self.dq=wx.TextCtrl(scrollWin,-1,"",pos=(180,y),size=(120,30))
+        y+=30
+        wx.StaticText(scrollWin,-1,"Associated Styles",pos=(40,y))
         ff=180
-        fg=530
+        y+=30
         for style in ui_core.get_style_list():
-            wx.CheckBox(scrollWin,-1,style,pos=(ff,fg)).Bind(wx.EVT_CHECKBOX, self.check_poss)
-            fg +=20
-        wx.StaticText(scrollWin,-1,"STATION DETAILS",pos=(40,780))
-        wx.StaticText(scrollWin,-1,"Associated Voices",pos=(40,800))
+            wx.CheckBox(scrollWin,-1,style,pos=(ff,y)).Bind(wx.EVT_CHECKBOX, self.check_poss)
+            y+=20
+        wx.StaticText(scrollWin,-1,"STATION DETAILS",pos=(40,y))
+        y+=30
+        wx.StaticText(scrollWin,-1,"Associated Voices",pos=(40,y))
         ss=180
-        st=815
+        y+=30
         for voice in ui_core.get_voice_list():
-            wx.CheckBox(scrollWin,-1,voice,pos=(ss,st)).Bind(wx.EVT_CHECKBOX, self.check_stav)
-            st +=20
-        wx.StaticText(scrollWin,-1,"No: of Words",pos=(40,970))
-        self.nw=wx.TextCtrl(scrollWin,-1,"",pos=(180,965),size=(120,30))
-        wx.StaticText(scrollWin,-1,"Delay/Cue",pos=(40,1010))
-        self.dc=wx.TextCtrl(scrollWin,-1,"",pos=(180,1005),size=(120,30))
-        wx.StaticText(scrollWin,-1,"Associated Styles",pos=(40,1035))
+            wx.CheckBox(scrollWin,-1,voice,pos=(ss,y)).Bind(wx.EVT_CHECKBOX, self.check_stav)
+            y+=20
+        y+=30
+        wx.StaticText(scrollWin,-1,"No: of Words",pos=(40,y))
+        y-=5
+        self.nw=wx.TextCtrl(scrollWin,-1,"",pos=(180,y),size=(120,30))
+        y+=40
+        wx.StaticText(scrollWin,-1,"Delay/Cue",pos=(40,y))
+        y-=5
+        self.dc=wx.TextCtrl(scrollWin,-1,"",pos=(180,y),size=(120,30))
+        y+=40
+        wx.StaticText(scrollWin,-1,"Associated Styles",pos=(40,y))
         cc=180
-        cd=1050
+        y+=30
         for style in ui_core.get_style_list():
-            wx.CheckBox(scrollWin,-1,style,pos=(cc,cd)).Bind(wx.EVT_CHECKBOX, self.check_stas)
-            cd +=20
-        wx.StaticText(scrollWin,-1,"FREQUENCY DETAILS",pos=(40,1300))
-        wx.StaticText(scrollWin,-1,"Associated Voices",pos=(40,1320))
+            wx.CheckBox(scrollWin,-1,style,pos=(cc,y)).Bind(wx.EVT_CHECKBOX, self.check_stas)
+            y+=20
+        y+=30
+        wx.StaticText(scrollWin,-1,"FREQUENCY DETAILS",pos=(40,y))
+        y+=30
+        wx.StaticText(scrollWin,-1,"Associated Voices",pos=(40,y))
         ab=180
-        ac=1335
+        y+=30
         for voice in ui_core.get_voice_list():
-            wx.CheckBox(scrollWin,-1,voice,pos=(ab,ac)).Bind(wx.EVT_CHECKBOX, self.check_frev)
-            ac +=20
-        wx.StaticText(scrollWin,-1,"Delay/Cue",pos=(40,1485))
-        self.dcc=wx.TextCtrl(scrollWin,-1,"",pos=(180,1480),size=(120,30))
-        wx.StaticText(scrollWin,-1,"Associated Styles",pos=(40,1510))
+            wx.CheckBox(scrollWin,-1,voice,pos=(ab,y)).Bind(wx.EVT_CHECKBOX, self.check_frev)
+            y+=20
+        y+=40
+        wx.StaticText(scrollWin,-1,"Delay/Cue",pos=(40,y))
+        y-=5
+        self.dcc=wx.TextCtrl(scrollWin,-1,"",pos=(180,y),size=(120,30))
+        y+=30
+        wx.StaticText(scrollWin,-1,"Associated Styles",pos=(40,y))
         xx=180
-        xy=1525
+        y+=30
         for style in ui_core.get_style_list():
-            wx.CheckBox(scrollWin,-1,style,pos=(xx,xy)).Bind(wx.EVT_CHECKBOX, self.check_fres)
-            xy +=20
-        wx.StaticText(scrollWin,-1,"POST HOOK Details",pos=(40,1775))
-        wx.StaticText(scrollWin,-1,"File Name",pos=(40,1805))
-        self.f1=wx.TextCtrl(scrollWin,-1,"",pos=(180,1800),size=(120,30))
-        wx.StaticText(scrollWin,-1,"Station Details- Post Hooks",pos=(40,1840))
-        wx.StaticText(scrollWin,-1,"Delay/Cue",pos=(40,1880))
-        self.d1=wx.TextCtrl(scrollWin,-1,"",pos=(180,1875),size=(120,30))
-        wx.StaticText(scrollWin,-1,"Frequency Details- Post Hooks",pos=(40,1915))
-        wx.StaticText(scrollWin,-1,"Delay/Cue",pos=(40,1955))
-        self.d2=wx.TextCtrl(scrollWin,-1,"",pos=(180,1950),size=(120,30))
-        userbut=wx.Button(scrollWin,label='Add',pos=(120,2000),size=(100,-1))
+            wx.CheckBox(scrollWin,-1,style,pos=(xx,y)).Bind(wx.EVT_CHECKBOX, self.check_fres)
+            y+=20
+        y=y+20
+        wx.StaticText(scrollWin,-1,"POST HOOK Details",pos=(40,y))
+        y+=30
+        wx.StaticText(scrollWin,-1,"File Name",pos=(40,y))
+        y-=5
+        self.f1=wx.TextCtrl(scrollWin,-1,"",pos=(180,y),size=(120,30))
+        y+=40
+        wx.StaticText(scrollWin,-1,"Station Details- Post Hooks",pos=(40,y))
+        y+=30
+        wx.StaticText(scrollWin,-1,"Delay/Cue",pos=(40,y))
+        y=y-5
+        self.d1=wx.TextCtrl(scrollWin,-1,"",pos=(180,y),size=(120,30))
+        y+=40
+        wx.StaticText(scrollWin,-1,"Frequency Details- Post Hooks",pos=(40,y))
+        y+=30
+        wx.StaticText(scrollWin,-1,"Delay/Cue",pos=(40,y))
+        y-=5
+        self.d2=wx.TextCtrl(scrollWin,-1,"",pos=(180,y),size=(120,30))
+        y+=50
+        userbut=wx.Button(scrollWin,label='Add',pos=(120,y),size=(100,-1))
         userbut.Bind(wx.EVT_BUTTON,self.butact,userbut)
-        scrollWin.SetScrollbars(1,20,1,105)
+        scrollWin.SetScrollbars(1,20,1,140)
         scrollWin.SetScrollRate( 1,5 )
 
     def check_for(self,e):
@@ -798,11 +823,13 @@ class AddTemp( wx.Frame ):
             y +=20
         y+=20
         wx.StaticText(scrollWin,-1,"No: of Words",pos=(40,y))
+        y-=5
         self.nw=wx.TextCtrl(scrollWin,-1,"",pos=(180,y),size=(120,30))
-        y+=30
+        y+=40
         wx.StaticText(scrollWin,-1,"Delay/Cue",pos=(40,y))
+        y-=5
         self.dq=wx.TextCtrl(scrollWin,-1,"",pos=(180,y),size=(120,30))
-        y+=30
+        y+=40
         wx.StaticText(scrollWin,-1,"Associated Styles",pos=(40,y))
         ff=180
         y+=30
@@ -820,8 +847,9 @@ class AddTemp( wx.Frame ):
             y +=20
         y+=30
         wx.StaticText(scrollWin,-1,"No: of Words",pos=(40,y))
+        y-=5
         self.nw1=wx.TextCtrl(scrollWin,-1,"",pos=(180,y),size=(120,30))
-        y+=30
+        y+=40
         wx.StaticText(scrollWin,-1,"Delay/Cue",pos=(40,y))
         self.dc=wx.TextCtrl(scrollWin,-1,"",pos=(180,y),size=(120,30))
         y+=30
@@ -842,6 +870,7 @@ class AddTemp( wx.Frame ):
             y +=20
         y+=20
         wx.StaticText(scrollWin,-1,"Delay/Cue",pos=(40,y))
+        y=y-5
         self.dcc=wx.TextCtrl(scrollWin,-1,"",pos=(180,y),size=(120,30))
         y+=30
         wx.StaticText(scrollWin,-1,"Associated Styles",pos=(40,y))
@@ -853,7 +882,7 @@ class AddTemp( wx.Frame ):
         y+=30
         userbut=wx.Button(scrollWin,label='Add',pos=(130,y),size=(100,-1))
         userbut.Bind(wx.EVT_BUTTON,self.butact,userbut)
-        scrollWin.SetScrollbars(1,20,1,100)
+        scrollWin.SetScrollbars(1,20,1,120)
         scrollWin.SetScrollRate( 1, 1 )        
 
     def check_for(self,e):
