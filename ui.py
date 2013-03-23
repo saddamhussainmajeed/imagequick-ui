@@ -703,7 +703,7 @@ class AddHook( wx.Frame ):
         y+=50
         userbut=wx.Button(scrollWin,label='Add',pos=(120,y),size=(100,-1))
         userbut.Bind(wx.EVT_BUTTON,self.butact,userbut)
-        scrollWin.SetScrollbars(1,20,1,140)
+        scrollWin.SetScrollbars(1,20,1,y/19)
         scrollWin.SetScrollRate( 1,5 )
 
     def check_for(self,e):
@@ -882,8 +882,8 @@ class AddTemp( wx.Frame ):
         y+=30
         userbut=wx.Button(scrollWin,label='Add',pos=(130,y),size=(100,-1))
         userbut.Bind(wx.EVT_BUTTON,self.butact,userbut)
-        scrollWin.SetScrollbars(1,20,1,120)
-        scrollWin.SetScrollRate( 1, 1 )        
+        scrollWin.SetScrollbars(1,20,1,y/19)
+        scrollWin.SetScrollRate( 1, 5 )        
 
     def check_for(self,e):
         sender = e.GetEventObject()
@@ -935,7 +935,7 @@ class AddTemp( wx.Frame ):
             self.frestyle_list.remove(sender.Label)
 
     def butact(self,event):
-        format = {
+        template = {
             'statCue':self.dc.GetValue(),
             'name':self.tn.GetValue(),
             'producer':self.po.GetValue(),
@@ -944,7 +944,7 @@ class AddTemp( wx.Frame ):
             'statWords':self.nw1.GetValue(),
             'filename':self.fn.GetValue(),
             'freCue':self.dcc.GetValue(),
-            'length':self.le.GetValue(),
+            'length':float(self.le.GetValue()),
             'formatids':ui_core.get_format_ids(self.form_list),
             'freStyleids':ui_core.get_style_ids(self.frestyle_list),
             'freVoiceids':ui_core.get_voice_ids(self.frevoice_list),
@@ -954,7 +954,7 @@ class AddTemp( wx.Frame ):
             'statVoiceids':ui_core.get_voice_ids(self.stavoice_list),
             'posWords':self.nw.GetValue(),
         }
-        print format
+        c
         #create.format(format)
         self.Close()
 

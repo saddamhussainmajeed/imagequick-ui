@@ -39,5 +39,18 @@ def style(style):
 	database.db.styles.insert(style)
 	return True
 
+def template(template):
+	if template['name'] is not None:
+		database.db.templates.insert(template)
+		return True
+	else:
+		return False
+	
+def hooktemplate(template):
+	if template['name'] is not None:
+		database.db.templates.insert(template)
+		return True
+	else:
+		return False
 
 
