@@ -37,7 +37,8 @@ class MainFrame(wx.Frame):
         createmenu.Append(209, 'Hook')
         createmenu.Append(203, 'Hook Template')
         createmenu.Append(210, 'Slogan Length')
-        
+        createmenu.AppendSeparator()
+        createmenu.Append(211, 'Coupons')
                         
         sub=wx.Menu()
         sub.Append(310,'SFP',kind=wx.ITEM_NORMAL)
@@ -103,7 +104,8 @@ class MainFrame(wx.Frame):
         self.Bind(wx.EVT_MENU,self.OnAbout,id=501)
         self.Bind(wx.EVT_MENU,self.adhook,id=209)
         self.Bind(wx.EVT_MENU,self.actslo,id=210)
-
+        self.Bind(wx.EVT_MENU,self.actcop,id=211)
+    
     def actconnect(self,event):
         self.new=IpConnect(parent=None,id=-1)
         self.new.Show(True)
@@ -148,6 +150,9 @@ class MainFrame(wx.Frame):
         self.new=AddSlo(parent=None,id=-1)
         self.new.Show(True)
     
+    def actcop(self,event):
+        self.new=AddCoup(parent=None,id=-1)
+        self.new.Show(True) 
 
     def OnQuit(self, event):
         self.Close()
@@ -369,6 +374,27 @@ class AddSlo(wx.Frame):
                 'length':self.le.GetValue(),
         }
         print slog
+
+class AddCoup(wx.Frame):
+    def __init__(self,parent,id):
+        wx.Frame.__init__(self,parent,id,'Add Coupons',size=(400,250))
+        wx.Frame.CentreOnScreen(self)
+        inp=wx.Panel(self,-1,(-1,-1),(-1,-1))
+        wx.StaticText(inp,-1,"Code",pos=(40,40))
+        self.co=wx.TextCtrl(inp,-1,"",pos=(180,35),size=(180,30))
+        wx.StaticText(inp,-1,"Remainig Uses",pos=(40,80))
+        self.rg=wx.TextCtrl(inp,-1,"",pos=(180,75),size=(120,30))
+        wx.StaticText(inp,-1,"Max Tracks",pos=(40,120))
+        self.mt=wx.TextCtrl(inp,-1,"",pos=(180,115),size=(120,30))
+        but=wx.Button(inp,label='Add',pos=(160,180),size=(65,-1)).Bind(wx.EVT_BUTTON,self.butact)
+
+    def butact(self,event):
+        coup = {
+                'code':self.co.GetValue(),
+                'remaininguses':self.rg.GetValue(),
+                'maxtracks': self.mt.GetValue()
+        }
+        print coup
 
 class NewHook(wx.Frame):
     def __init__(self,parent,id):
