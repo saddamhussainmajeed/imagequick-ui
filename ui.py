@@ -366,9 +366,10 @@ class AddSlo(wx.Frame):
     def butact(self,event):
         slog = {
                 'slogan':self.sl.GetValue(),
-                'length':self.le.GetValue(),
+                'length':float(self.le.GetValue()),
         }
-        print slog
+        create.slogan_length(slog)
+        self.Close()
 
 class NewHook(wx.Frame):
     def __init__(self,parent,id):
@@ -391,14 +392,15 @@ class NewHook(wx.Frame):
 
     def butact(self,event):
         hook = {
-                'name':self.hk.GetValue(),
+                'hook':self.hk.GetValue(),
                 'format':self.cb.GetValue(),
                 'category':self.cb2.GetValue(),
-                'vo_length':self.vl.GetValue(),
-                'length':self.nl.GetValue(),
+                'vo_length':float(self.vl.GetValue()),
+                'length':float(self.nl.GetValue()),
                 'vo_hook':self.hk.GetValue()+'_VO'
         }
-        print hook
+        create.hook(hook)
+        self.Close()
         
 
 
@@ -756,7 +758,7 @@ class AddHook( wx.Frame ):
             self.frestyle_list.remove(sender.Label)
 
     def butact(self,event):
-        format = {
+        hooktemplate = {
             'name':self.tn.GetValue(),
             'filename1':self.fn.GetValue(),
             'filename2':self.f1.GetValue(),
@@ -776,8 +778,7 @@ class AddHook( wx.Frame ):
             'freStyleids':ui_core.get_style_ids(self.frestyle_list),
             'price':self.pr.GetValue()
         }
-        print format
-        #create.format(format)
+        create.hooktemplate(hooktemplate)
         self.Close()
 #end for
 
@@ -954,8 +955,7 @@ class AddTemp( wx.Frame ):
             'statVoiceids':ui_core.get_voice_ids(self.stavoice_list),
             'posWords':self.nw.GetValue(),
         }
-        c
-        #create.format(format)
+        create.template(template)
         self.Close()
 
 #end for

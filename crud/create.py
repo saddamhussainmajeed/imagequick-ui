@@ -53,4 +53,31 @@ def hooktemplate(template):
 	else:
 		return False
 
-
+def hook(hook):
+	if hook['hook'] is not None:
+		db.hooks.insert({
+			'hook':hook['hook'],
+			'format':hook['format'],
+			'category':hook['category']			
+		})
+		if hook['length'] is not None:
+			db.hook_lengths.insert({
+				'name':hook['name'],
+				'length':hook['length']				
+			})
+		if hook['vo_length'] is not None:
+			db.hook_lengths.insert({
+				'name':hook['vo_hook'],
+				'length':hook['vo_length'],				
+			})
+		return True
+	else:
+		return False
+	
+def slogan_length(slogan):
+	if slogan['length'] is not None:
+		db.slogan_length.insert(slogan)
+		return True
+	else:
+		return False
+	
