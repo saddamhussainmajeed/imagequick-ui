@@ -1027,7 +1027,6 @@ class Timer(wx.Frame):
 
 
     def OnIdle(self, event):
-        print "*"
         self.gauge.Pulse()
 
 app = MyApp(0)
