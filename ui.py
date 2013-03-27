@@ -392,10 +392,11 @@ class AddCoup(wx.Frame):
     def butact(self,event):
         coup = {
                 'code':self.co.GetValue(),
-                'remaininguses':self.rg.GetValue(),
-                'maxtracks': self.mt.GetValue()
+                'remaininguses':int(self.rg.GetValue()),
+                'maxtracks': int(self.mt.GetValue())
         }
-        print coup
+        create.coupon(coup)
+        self.Close()
 
 class NewHook(wx.Frame):
     def __init__(self,parent,id):
@@ -436,7 +437,7 @@ class IpConnect(wx.Frame):
         wx.Frame.CentreOnScreen(self)
         inp=wx.Panel(self,-1,(-1,-1),(-1,-1))
         wx.StaticText(inp,-1,"Server IP",pos=(100,80))
-        self.s=wx.TextCtrl(inp,-1,pos=(225,75),size=(150,30))
+        self.s=wx.TextCtrl(inp,-1,"db.image-quick.com",pos=(225,75),size=(150,30))
         wx.StaticText(inp,-1,"PORT",pos=(100,120))
         self.p=wx.TextCtrl(inp,-1,"27017",pos=(225,115),size=(100,30))
         self.p.SetInsertionPoint(0)

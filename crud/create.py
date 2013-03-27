@@ -12,7 +12,7 @@ def template(template):
 	return True
 
 def hooktemplate(template):
-	database.db.hook_templates.insert(template)
+	database.database.db.hook_templates.insert(template)
 	return True
 
 def format(format):
@@ -55,18 +55,18 @@ def hooktemplate(template):
 
 def hook(hook):
 	if hook['hook'] is not None:
-		db.hooks.insert({
+		database.db.hooks.insert({
 			'hook':hook['hook'],
 			'format':hook['format'],
 			'category':hook['category']			
 		})
 		if hook['length'] is not None:
-			db.hook_lengths.insert({
+			database.db.hook_lengths.insert({
 				'name':hook['name'],
 				'length':hook['length']				
 			})
 		if hook['vo_length'] is not None:
-			db.hook_lengths.insert({
+			database.db.hook_lengths.insert({
 				'name':hook['vo_hook'],
 				'length':hook['vo_length'],				
 			})
@@ -76,8 +76,14 @@ def hook(hook):
 	
 def slogan_length(slogan):
 	if slogan['length'] is not None:
-		db.slogan_length.insert(slogan)
+		database.db.slogan_length.insert(slogan)
 		return True
 	else:
 		return False
 	
+def coupon(c):
+	if c['code'] is not None:
+		database.db.coupons.insert(c)
+		return True
+	else:
+		return False

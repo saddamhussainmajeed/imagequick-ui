@@ -3,8 +3,8 @@ from subprocess import call
 import datetime
 import os
 
-connection = MongoClient()
-db = connection.imagequick_dev
+connection = None
+db = None
 
 def connect(host,port):
 	global connection,db
